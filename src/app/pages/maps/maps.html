@@ -1,0 +1,235 @@
+<div *ngIf="isAuthenticated">
+
+    <div class="map">
+      <agm-map
+      (mapReady)="onMapReady($event)"
+      [zoom]="14"
+      [longitude]="markers[0].lng"
+      [latitude]="markers[0].lat"
+      [styles]="mapStyles" class="height-full width-full"
+      [mapTypeControl]='true'>
+        <span *ngIf="isMarkersVisible">
+          <agm-marker
+          *ngFor="let marker of cameraData; let i = index"
+          [latitude]="marker.lat"
+          [longitude]="marker.lng"
+          [draggable]="true"
+          (markerClick)="onMarkerClick(i)"
+          [iconUrl]="markerIconUrl(marker)"
+          ></agm-marker>
+        </span>
+      </agm-map>
+    </div>
+
+    <div class="map-control-container" (click)="onOptionsClick()" >
+      <i class="fas fa-map fa-3x"></i>
+    </div>
+
+    <div class="map-options-container" *ngIf="toggle">
+      <mat-slide-toggle (change)="onTrafficCamClick('traffic')" [checked]="isTrafficOverlay"><p style="color: black; padding-top: 16px;">TRAFFIC</p></mat-slide-toggle>
+      <mat-slide-toggle (change)="onTrafficCamClick('boundary')" [checked]="isBoundaryOverlay"><p style="color: black; padding-top: 16px;">BOUNDARY</p></mat-slide-toggle>
+      <mat-slide-toggle (change)="onTrafficCamClick('heatmap-revenue')" [checked]="isHeatmapRevenueOverlay"><p style="color: black; padding-top: 16px;">REVENUE</p></mat-slide-toggle>
+      <mat-slide-toggle (change)="onTrafficCamClick('heatmap-paid')" [checked]="isheatmapPaidOverlay"><p style="color: black; padding-top: 16px;">PAID</p></mat-slide-toggle>
+      <mat-slide-toggle color="warn" (change)="onTrafficCamClick('markers')" [checked]="isMarkersVisible"><p style="color: black; padding-top: 16px;">MARKERS</p></mat-slide-toggle>
+    </div>
+
+    <div class="heatmap-legend-container" *ngIf="isHeatmapRevenueOverlay">
+        <img class="heatmap-legend" src="assets/img/heatmap_legend.svg"/>
+        <ul style="padding-left: 40px;">
+          <li>HEY</li>
+        </ul>
+    </div>
+
+
+
+    <div class="search-control-container">
+          <div class="row">
+            <div class="col-md-2" style="padding-top: 8px;"><p>Street Filter:</p></div>
+            <div class="col-md-10" style="float: left;"><kendo-multiselect [data]="listItems" (valueChange)="valueChange($event)"></kendo-multiselect></div>
+          </div>
+    </div>
+
+    <div class="col-md-3 col-lg-2 map-dashboard" style="margin-left: -4px;">
+
+          <div style="margin-top: 100px;" class="slide-in-one">
+            <div class="widget widget-stats" style="background-color: #27ae5f">
+              <div class="stats-icon"><i class="fa fa-dollar-sign"></i></div>
+              <div class="stats-info">
+                <h4>Total Revenue</h4>
+                <p class="map-dashboard-values">{{ mapDashboard.totalRevenue  | currency:'$' }}</p>
+              </div>
+              <div class="stats-link">
+                <a (click)="onViewDetailsClick('totalRevenue')">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 0px;" class="slide-in-two ">
+            <div class="widget widget-stats" style="background-color: #e67d22">
+              <div class="stats-icon"><i class="fa fa-money-bill"></i></div>
+              <div class="stats-info">
+                <h4>ATS Fees</h4>
+                <p class="map-dashboard-values">{{mapDashboard.totalATSFees | currency:'$'}}</p>
+              </div>
+              <div class="stats-link">
+                <a (click)="onViewDetailsClick('ATSFees')">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 0px;" class="slide-in-three">
+            <div class="widget widget-stats" style="background-color: #8d44ad">
+              <div class="stats-icon"><i class="fa fa-ticket-alt"></i></div>
+              <div class="stats-info">
+                <h4>Total Tickets Issued</h4>
+                <p class="map-dashboard-values">{{mapDashboard.totalTicketsIssued | number }}</p>
+              </div>
+              <div class="stats-link">
+                <a (click)="onViewDetailsClick('totalTicketsIssued')">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 0px;" class="slide-in-four">
+            <div class="widget widget-stats" style="background-color: #297fb9">
+              <div class="stats-icon"><i class="fa fa-ticket-alt"></i></div>
+              <div class="stats-info">
+                <h4>Total Tickets Paid</h4>
+                <p class="map-dashboard-values">{{mapDashboard.totalTicketsPaid | number}}</p>
+              </div>
+              <div class="stats-link">
+                <a (click)="onViewDetailsClick('totalTicketsPaid')">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+<!-- e74d3cee -->
+          <div style="margin-top: 0px;" class="slide-in-five">
+            <div class="widget widget-stats" style="background-color: #e74d3c">
+              <div class="stats-icon"><i class="fa fa-video-camera"></i></div>
+              <div class="stats-info">
+                <h4>Cameras</h4>
+                <p class="map-dashboard-values">{{mapDashboard.camerasCount}}</p>
+              </div>
+              <div class="stats-link">
+                <a (click)="onViewDetailsClick('cameras')">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+    </div>
+
+
+    <!-- On Marker Click Dialog Pop Up -->
+    <kendo-dialog
+        [title]="dialogTitle"
+        *ngIf="isDialogVisible"
+        (close)="closeDialog()"
+        [minWidth]="250"
+        [width]="panelDimensions.width"
+        [height]="panelDimensions.height">
+        <div class="dialog-container">
+
+          <div class="row">
+            <div class="col-sm-3">
+              <p>Site ID:</p>
+              <p>Status:</p>
+              <p>Camera Status: </p>
+              <p>Location Code: </p>
+              <p>Paid YTD: </p>
+              <p>Issued YTD: </p>
+            </div>
+            <div class="col-sm-3">
+              <p>{{this.selectedCamera.site_id}}</p>
+              <p>{{this.selectedCamera.status === 1 ? 'Under Construction': 'Not Under Construction'}}</p>
+              <p>{{this.selectedCamera.camera_status}}</p>
+              <p>{{this.selectedCamera.location_code}}</p>
+              <p>{{this.selectedCamera.paidTicketsForCurrentYear}}</p>
+              <p>{{this.selectedCamera.issuedTicketsForCurrentYear}}</p>
+            </div>
+            <div class="col-sm-3">
+              <p>Earnings YTD:</p>
+              <p>ATS Fee YTD:</p>
+              <p>Collection Rate:</p>
+              <!-- <p>Location Code: </p>
+              <p>Total Issued: </p>
+              <p>Total Paid: </p> -->
+            </div>
+            <div class="col-sm-3">
+              <p>{{ this.selectedCamera.paidEarningsTotalForCurrentYear | currency:'$' }}</p>
+              <p>{{ this.selectedCamera.atsFee | currency:'$' }}</p>
+              <p>{{ this.selectedCamera.collectionRate | percent}}</p>
+              <!-- <p>VALUE</p>
+              <p>VALUE</p>
+              <p>VALUE</p> -->
+            </div>
+          </div>
+
+          <div class="row dialog-bottom">
+            <div class="col-md-12">
+                <ngb-tabset>
+                    <ngb-tab>
+                      <ng-template ngbTabTitle>
+                        <span class="d-sm-none">Tab 1</span>
+                        <span class="d-sm-block d-none">Monthly</span>
+                      </ng-template>
+                      <ng-template ngbTabContent>
+                        <app-kendo-chart [height]="280" [series]="selectedCamera.kendoData.series" [categories]="selectedCamera.kendoData.categories" [chartType]="'column'"></app-kendo-chart>
+                      </ng-template>
+                    </ngb-tab>
+                    <ngb-tab>
+                      <ng-template ngbTabTitle>
+                        <span class="d-sm-none">Tab 2</span>
+                        <span class="d-sm-block d-none">Yearly</span>
+                      </ng-template>
+                      <ng-template ngbTabContent>
+
+
+                      </ng-template>
+                    </ngb-tab>
+                    <ngb-tab>
+                      <ng-template ngbTabTitle>
+                        <span class="d-sm-none">Tab 3</span>
+                        <span class="d-sm-block d-none">Comparisson Table</span>
+                      </ng-template>
+                      <ng-template ngbTabContent>
+                        <!-- <app-data-table [data]="comparissonTable" type="marker"></app-data-table> -->
+                      </ng-template>
+                    </ngb-tab>
+                    <ngb-tab>
+                        <ng-template ngbTabTitle>
+                          <span class="d-sm-none">Tab 4</span>
+                          <span class="d-sm-block d-none">Comparisson Map</span>
+                        </ng-template>
+                        <ng-template ngbTabContent>
+
+                        </ng-template>
+                    </ngb-tab>
+                  </ngb-tabset>
+            </div>
+          </div>
+
+        </div>
+    </kendo-dialog>
+    <!-- End On Marker Click Dialog Pop Up -->
+
+    <!-- View Details Dialog Pop Up -->
+    <kendo-dialog *ngIf="isViewDetailsDialogVisible" (close)="closeDialog()" [minWidth]="250" [width]="panelDimensions.width" [height]="panelDimensions.height">
+
+          <kendo-dialog-titlebar class="{{titleBarClass}}"><h3>{{viewDetailsTitle}}</h3></kendo-dialog-titlebar>
+
+        <div class="dialog-container">
+          <!-- TOTAL REVENUE -->
+         <div *ngIf="isTotalRevenueViewDetails">
+           <div class="row">
+              <h2 style="color: rgb(99, 99, 99);">{{viewDetailsData.totalRevenue | currency:'$' }}</h2>
+           </div>
+            <app-kendo-chart [height]="280" dataType="money" [series]="viewDetailsData.kendoData.series" [categories]="viewDetailsData.kendoData.categories" [chartType]="'column'"></app-kendo-chart>
+           <div class="row" style="margin-top: 10px;">
+              <app-data-table [data]="comparissonTable"></app-data-table>
+           </div>
+         </div>
+
+        </div>
+    </kendo-dialog>
+    <!-- End View Details Dialog Pop Up -->
+
+</div>

@@ -1,0 +1,343 @@
+<div class="main-container">
+
+    <ol class="breadcrumb pull-right">
+        <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+
+
+    <div class="row">
+        <div class="col-md-1 col-sm-12">Years Filter:</div>
+        <div class="col-md-5"><kendo-multiselect [data]="availableYearsArray" [autoClose]="false" (valueChange)="onYearFilterChange($event)"></kendo-multiselect></div>
+        <div class="col-md-1 col-sm-12">Months Filter:</div>
+        <div class="col-md-5"><kendo-multiselect [data]="availableMonthsArray" [autoClose]="false" (valueChange)="onMonthFilterChange($event)"></kendo-multiselect></div>
+    </div>
+
+    <!-- DASHBOARD TOTALS TOP TILES -->
+    <div class="row" style="padding-top: 20px;">
+
+            <div class="col-lg-3 col-md-6 bounce-in-top">
+              <div class="widget widget-stats bg-green">
+                <div class="stats-icon stats-icon-lg"><i class="fa fa-dollar-sign"></i></div>
+                <div class="stats-content">
+                  <div class="stats-title">NET REVENUE</div>
+                  <div class="stats-number">{{(dashboardTotals.revenue_net ? dashboardTotals.revenue_net : 0) | currency:'$' }}</div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 bounce-in-top">
+              <div class="widget widget-stats bg-gradient-orange">
+                <div class="stats-icon stats-icon-lg"><i class="fa fa-dollar-sign fa-fw"></i></div>
+                <div class="stats-content">
+                  <div class="stats-title">TOTAL FEES PAID</div>
+                  <div class="stats-number">{{((
+                    dashboardTotals.fee_ats_rlc +
+                    dashboardTotals.fee_county_disabled_tix +
+                    dashboardTotals.fee_marshal +
+                    dashboardTotals.fee_ypa) ? (
+                      dashboardTotals.fee_ats_rlc +
+                      dashboardTotals.fee_county_disabled_tix +
+                      dashboardTotals.fee_marshal +
+                      dashboardTotals.fee_ypa) : 0) | currency: '$'}}</div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 bounce-in-top">
+              <div class="widget widget-stats bg-gradient-purple">
+                <div class="stats-icon stats-icon-lg"><i class="fa fa-ticket-alt fa-fw"></i></div>
+                <div class="stats-content">
+                  <div class="stats-title">TOTAL TICKETS ISSUED</div>
+                  <div class="stats-number">{{(dashboardTotals.tickets_total ? dashboardTotals.tickets_total : 0) | number}}</div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 bounce-in-top">
+              <div class="widget widget-stats bg-gradient-red">
+                <div class="stats-icon stats-icon-lg"><i class="fa fa-camera-retro fa-fw"></i></div>
+                <div class="stats-content">
+                  <div class="stats-title">TOTAL REDLIGHT REVENUE</div>
+                  <div class="stats-number">{{(dashboardTotals.revenue_redlight ? dashboardTotals.revenue_redlight : 0) | currency: '$'}}</div>
+
+                </div>
+              </div>
+            </div>
+
+    </div>
+
+    <!-- DASHBOARD SELECTOR -->
+    <div class="row">
+
+      <div class="col-lg-12">
+          <div class="card-accordion">
+            <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+              <ngb-panel>
+                <ng-template ngbPanelTitle>
+                  <span class="text-inverse">Dashboard Selector</span>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                    <div class="row">
+                      <p>Please select a dashboard to add..</p>
+                    </div>
+                    <div class="row">
+                        <button type="button" *ngFor="let item of dashboardList_inactive" class="button-dashboard {{item.class}}" (click)="onDashboardAddClick(item)">{{item.title}}</button>
+                    </div>
+                </ng-template>
+              </ngb-panel>
+            </ngb-accordion>
+          </div>
+      </div>
+
+    </div>
+
+    <!-- ALL THE DASHBOARDS -->
+    <div class="row">
+
+        <!-- NET REVENUE DASHBOARD -->
+        <div class="col-md-12 col-lg-8" *ngIf="dashboardList[0].active">
+          <panel  title="Net Revenue" [dashId]="dashboardList[0]">
+              <app-kendo-chart dataType="money" [height]="300" [series]="netRevenueDashboard.series" [categories]="netRevenueDashboard.categories" [chartType]="'column'"></app-kendo-chart>
+          </panel>
+        </div>
+
+        <!-- NOTICE SENT -->
+        <div class="col-md-12 col-lg-4 " *ngIf="dashboardList[1].active">
+          <panel title="Notices Sent" [dashId]="dashboardList[1]">
+            <kendo-chart [seriesColors]="['#eb9345', '#297fb9', '#fc513e']" >
+              <kendo-chart-tooltip>
+                <ng-template kendoChartSeriesTooltipTemplate let-value="value">
+                  {{ value | number}} Notices
+                </ng-template>
+              </kendo-chart-tooltip>
+
+              <kendo-chart-area [height]="300"></kendo-chart-area>
+                <kendo-chart-legend position="top"></kendo-chart-legend>
+                <kendo-chart-series>
+                  <kendo-chart-series-item type="pie"
+                    [data]="noticesSent"
+                    field="value"
+                    categoryField="category">
+                  </kendo-chart-series-item>
+                </kendo-chart-series>
+            </kendo-chart>
+          </panel>
+        </div>
+
+        <!-- TOTAL PACKAGE ISSUED BREAKDOWN -->
+        <div class="col-md-12 col-lg-4 " *ngIf="dashboardList[2].active">
+            <panel title="Issued Tickets" [dashId]="dashboardList[2]" >
+                <ng-container>
+                  <div class="bg-black">
+                      <app-kendo-chart dataType="tickets" [height]="170" [series]="totalPackageTicketsIssued.kendoData" [categories]="totalPackageTicketsIssued.categories" [chartType]="'column'"></app-kendo-chart>
+                  </div>
+
+                </ng-container>
+
+                <ng-container outsideBody>
+                    <div class="hljs-wrapper">
+                        <div class="list-group">
+                            <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                              PEO Tickets Issued
+                              <span class="badge f-w-500 bg-gradient-dark-blue f-s-10">{{totalPackageTicketsIssued.totalPackage.subtype1 | number}}</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                              Other Tickets Issued
+                              <span class="badge f-w-500 bg-gradient-blue f-s-10">{{totalPackageTicketsIssued.totalPackage.subtype2 | number}}</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                              YPA Tickets Issued
+                              <span class="badge f-w-500 bg-gradient-green f-s-10">{{totalPackageTicketsIssued.totalPackage.subtype3 | number}}</span>
+                            </a>
+                            <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                              YPD Tickets Issued
+                              <span class="badge f-w-500 bg-gradient-orange f-s-10">{{totalPackageTicketsIssued.totalPackage.subtype4 | number}}</span>
+                            </a>
+                          </div>
+                    </div>
+                </ng-container>
+
+            </panel>
+        </div>
+
+        <!-- TOTAL PACKAGE FEES BREAKDOWN -->
+        <div class="col-md-12 col-lg-4 " *ngIf="dashboardList[3].active">
+                <panel title="Fees Paid"   [dashId]="dashboardList[3]">
+                      <ng-container >
+                        <div class="bg-black">
+                            <app-kendo-chart dataType="money" [height]="170" [series]="totalFeesPackageChart.kendoData" [categories]="totalFeesPackageChart.categories" [chartType]="'column'"></app-kendo-chart>
+                        </div>
+
+                      </ng-container>
+
+                      <ng-container outsideBody>
+                          <div class="hljs-wrapper">
+                              <div class="list-group">
+                                  <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                                    ATS RLC Fee {{this.yearList}}
+                                    <span class="badge f-w-500 bg-gradient-dark-blue f-s-10">{{totalFeesPackageChart.totalPackage.subtype1 | currency: '$'}}</span>
+                                  </a>
+                                  <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                                    Marshal / Colln Agency Fee {{this.yearList}}
+                                    <span class="badge f-w-500 bg-gradient-blue f-s-10">{{totalFeesPackageChart.totalPackage.subtype2 |  currency: '$'}}</span>
+                                  </a>
+                                  <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                                    YPA Fee {{this.yearList}}
+                                    <span class="badge f-w-500 bg-gradient-green f-s-10">{{totalFeesPackageChart.totalPackage.subtype3 | currency: '$'}}</span>
+                                  </a>
+                                  <a href="javascript:;" class="list-group-item list-group-item d-flex justify-content-between align-items-center text-ellipsis">
+                                    County Disabled Ticket Fee {{this.yearList}}
+                                    <span class="badge f-w-500 bg-gradient-orange f-s-10">{{totalFeesPackageChart.totalPackage.subtype4 | currency: '$'}}</span>
+                                  </a>
+                                </div>
+                          </div>
+                      </ng-container>
+
+                </panel>
+        </div>
+
+        <!-- TOTAL PACKAGE REVENUE -->
+        <div class="col-md-12 col-lg-4 " *ngIf="dashboardList[4].active" >
+          <panel  title="Total Package Revenue" [dashId]="dashboardList[4]">
+              <app-kendo-chart dataType="money" [height]="327" [series]="totalPackageRevenue.series" [categories]="totalPackageRevenue.categories" [chartType]="'line'"></app-kendo-chart>
+          </panel>
+        </div>
+
+        <!-- TOTAL REDLIGHT REVENUE -->
+        <div class="col-md-12 col-lg-4" *ngIf="dashboardList[5].active">
+            <panel title="Redlight Revenue" [dashId]="dashboardList[5]">
+                <app-kendo-chart dataType="money" [height]="327" [series]="redlightRevenueDashboard.series" [categories]="redlightRevenueDashboard.categories" [chartType]="'line'"></app-kendo-chart>
+            </panel>
+        </div>
+
+
+
+    </div>
+
+    <!-- TABLE VIEW -->
+    <div class="row">
+      <div class="col-md-12 col-lg-12" *ngIf="dashboardList[6].active">
+          <panel title="Table View" [dashId]="dashboardList[6]">
+              <kendo-grid
+              [data]="gridData"
+              [columnMenu]="true"
+              [height]="240">
+
+
+                  <kendo-grid-column field="year" title="Year" width="20"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="revenue_net" title="Net Rev" width="40" format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="revenue_total" title="Total Rev" width="40"  format="{0:c}"></kendo-grid-column>
+
+                  <!-- FEES -->
+                  <kendo-grid-column [hidden]="true" field="fee_county_disabled_tix" title="County Disabled Fee" width="50"  format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="fee_ypa" title="YPA Fee" width="40"  format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="fee_marshal" title="Marshal Fee" width="40"  format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="fee_ats_rlc" title="ATS RLC Fee" width="40"  format="{0:c}"></kendo-grid-column>
+
+                  <!-- TOTALS -->
+                  <kendo-grid-column [hidden]="true" field="revenue_total_pkg" title="Total Pkg Rev" width="40" format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="revenue_redlight" title="Redlight Rev" width="40" format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="revenue_total_code_enf" title="Code ENF REV PVB" width="40" format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="revenue_total_code_enf_courts" title="Code ENF REV Courts" width="40" format="{0:c}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="tickets_total" title="Pkg Tix Issued" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="tickets_peo" title="PEO" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true"  field="tickets_ypa" title="YPA" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="tickets_ypd" title="YPD" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="tix_code" title="CODE" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column  field="tix_rlc" title="RLC" width="40" format="{0:n}"></kendo-grid-column>
+
+
+                  <!-- NOTICES -->
+                  <kendo-grid-column [hidden]="true" field="notices_total" title="Total Notices" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column  field="notices_boot" title="Boot" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column  field="notices_meter" title="Meter" width="40" format="{0:n}"></kendo-grid-column>
+                  <kendo-grid-column [hidden]="true" field="notices_suspended" title="Suspended" width="40" format="{0:n}"></kendo-grid-column>
+
+              </kendo-grid>
+          </panel>
+      </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12 col-lg-12" *ngIf="dashboardList[7].active">
+            <panel title="Timeline View" [dashId]="dashboardList[7]" [bodyColor]="'lightgrey'">
+              <ng-container >
+                <!-- begin timeline -->
+                <ul class="timeline">
+                  <li *ngFor="let post of timelineActivityPosts">
+                    <!-- begin timeline-time -->
+                    <div class="timeline-time">
+                      <span class="time">{{post.time.toLocaleDateString()}}</span>
+                      <span class="date">04:20 PM</span>
+                    </div>
+                    <!-- end timeline-time -->
+                    <!-- begin timeline-icon -->
+                    <div class="timeline-icon">
+                      <a href="javascript:;">&nbsp;</a>
+                    </div>
+                    <!-- end timeline-icon -->
+                    <!-- begin timeline-body -->
+                    <div class="timeline-body">
+                      <div class="timeline-header">
+                        <!-- <span class="userimage"><img src="/assets/img/user/user-1.jpg" alt="" /></span> -->
+                        <span class="username"><a href="javascript:;">{{post.author}}</a> <small></small></span>
+                        <!-- <span class="pull-right text-muted">18 Views</span> -->
+                      </div>
+                      <div class="timeline-content">
+                        <p>
+                          {{post.post}}
+                        </p>
+                      </div>
+                      <div class="timeline-likes">
+                        <div class="stats">
+                          <!-- <span class="fa-stack fa-fw stats-icon">
+                            <i class="fa fa-circle fa-stack-2x text-danger"></i>
+                            <i class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
+                          </span>
+                          <span class="fa-stack fa-fw stats-icon">
+                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+                          </span>
+                          <span class="stats-total">4.3k</span> -->
+                        </div>
+                        <div class="stats-right">
+                          <!-- <span class="stats-text">259 Shares</span> -->
+                          <span class="stats-text">{{post.commentsCount}} Comments</span>
+                        </div>
+                      </div>
+                      <div class="timeline-footer">
+                        <!-- <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a> -->
+                        <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i> Comment</a>
+                        <!-- <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a> -->
+                      </div>
+                      <!-- <div class="timeline-comment-box">
+                        <div class="user"></div>
+                        <div class="input">
+                          <form action="">
+                            <div class="input-group">
+                              <input type="text" class="form-control rounded-corner" placeholder="Write a comment..." />
+                              <span class="input-group-btn p-l-10">
+                                <button class="btn btn-primary f-s-12 rounded-corner" type="button">Comment</button>
+                              </span>
+                            </div>
+                          </form>
+                        </div>
+                      </div> -->
+                    </div>
+                    <!-- end timeline-body -->
+                  </li>
+
+                </ul>
+                <!-- end timeline -->
+              </ng-container>
+            </panel>
+        </div>
+     
+    </div>
+
+</div>
