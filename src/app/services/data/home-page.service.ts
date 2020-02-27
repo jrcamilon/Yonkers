@@ -18,7 +18,7 @@ export class HomePageService {
   public getAllStats(): Observable<any> {
     // const body = {street_list: streetArry };
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.get('http://localhost:3094/statistics', {headers: headers})
+    return this._http.get('http://10.2.71.205:3094/statistics', {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -27,7 +27,7 @@ export class HomePageService {
 
   public getAllyearsFilters(): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.get('http://localhost:3094/statistics/yearfilters', {headers: headers})
+    return this._http.get('http://10.2.71.205:3094/statistics/yearfilters', {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -37,7 +37,7 @@ export class HomePageService {
   public getAllStatsFiltered(yearsArray: any[], monthsArray: any[]): Observable<any> {
     const body = {years_filter: yearsArray, months_filter: monthsArray};
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/statistics/statsFiltered', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/statistics/statsFiltered', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;

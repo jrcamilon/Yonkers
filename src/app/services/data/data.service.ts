@@ -16,7 +16,7 @@ export class DataService {
   constructor(private _http: Http) { }
 
   public heartbeat(): Observable<any> {
-    return this._http.get('http://localhost:3094/heartbeat')
+    return this._http.get('http://10.2.71.205:3094/heartbeat')
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -27,7 +27,7 @@ export class DataService {
 
     const body = {street_list: streetArry };
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/traffic', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/traffic', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -37,7 +37,7 @@ export class DataService {
   public getAllTrafficCamsByID(_id_array: any[]): Observable<any> {
     const body = {site_id_list: _id_array };
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/allcamsbyid', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/allcamsbyid', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -47,7 +47,7 @@ export class DataService {
   public getPaymentsForCam(_siteId: any): Observable<any> {
     const body = {site_id: _siteId };
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/payments', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/payments', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -59,7 +59,7 @@ export class DataService {
     const body = {site_id_list: _id_array };
     // console.log(body);
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/compare', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/compare', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -71,7 +71,7 @@ export class DataService {
     const body = {site_id_list: _id_array };
     // console.log(body);
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/viewdetails/revenue', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/viewdetails/revenue', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;

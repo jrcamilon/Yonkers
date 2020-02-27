@@ -15,7 +15,7 @@ export class DashboardDataService {
   public getInfoburstTest(): Observable<any> {
 
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.get('http://localhost:3094/infoburst/test', {headers: headers})
+    return this._http.get('http://10.2.71.205:3094/infoburst/test', {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -25,7 +25,7 @@ export class DashboardDataService {
   public getAllStatsFiltered(monthsArray: any[], yearsArray: any[]): Observable<any> {
     const body = {years_filter: yearsArray, months_filter: monthsArray};
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/dashboard/totals', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/dashboard/totals', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -35,7 +35,7 @@ export class DashboardDataService {
   public getBreakDownByMonth(monthsArray: any[], yearsArray: any[], type: string): Observable<any> {
     const body = {years_filter: yearsArray, months_filter: monthsArray, type: type};
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/dashboard/charts/bymonth', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/dashboard/charts/bymonth', body, {headers: headers})
     .map((response: Response) => {
 
       const tmpData = response.json();
@@ -59,7 +59,7 @@ export class DashboardDataService {
       type4: type4
     };
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/dashboard/charts/bymonthbreakdown', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/dashboard/charts/bymonthbreakdown', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -69,7 +69,7 @@ export class DashboardDataService {
   public getTableData(monthsArray: any[], yearsArray: any[]): Observable<any> {
     const body = {years_filter: yearsArray, months_filter: monthsArray};
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.post('http://localhost:3094/dashboard/table', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/dashboard/table', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;

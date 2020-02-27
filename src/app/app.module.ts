@@ -118,9 +118,9 @@ import 'hammerjs';
 
   ],
   imports: [
+    NgxChartsModule,
     AppRoutingModule,
     HttpModule,
-    AgmCoreModule.forRoot({ apiKey: 'AIzaSyC5gJ5x8Yw7qP_DqvNq3IdZi2WUSiDjskk' + '&libraries=visualization' }),
     BrowserAnimationsModule,
     BrowserModule,
     CalendarModule.forRoot(),
@@ -131,7 +131,6 @@ import 'hammerjs';
     FormsModule,
     HighlightJsModule,
     NgbModule.forRoot(),
-    NgxChartsModule,
     NvD3Module,
     ReactiveFormsModule,
     SlimLoadingBarModule.forRoot(),
@@ -177,7 +176,8 @@ import 'hammerjs';
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    DropDownsModule
+    DropDownsModule,
+    AgmCoreModule.forRoot({ apiKey: 'AIzaSyC5gJ5x8Yw7qP_DqvNq3IdZi2WUSiDjskk' + '&libraries=visualization' }),
 
   ],
   providers: [ Title, AuthService, DataService ],

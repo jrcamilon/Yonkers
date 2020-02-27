@@ -7,7 +7,8 @@
 const env = {
   local: 'http://localhost:4200/implicit/callback/',
   test: 'http://70.176.243.97:8551/apps/yonkerscallback/',
-  prod: 'http://localhost:8551/apps/yonkerscallback/'
+  prod: 'http://localhost:8551/apps/yonkerscallback/',
+  yonkersDev: 'http://10.2.71.205:4200/apps/yonkerscallback/'
 }
 
 export const environment = {
@@ -15,7 +16,7 @@ export const environment = {
   oktaConfig: {
     clientId: '0oairuqk2i2gqj7mZ0h7',
     issuer: 'https://dev-456721.oktapreview.com/oauth2/default',
-    redirectUri: env.local,
+    redirectUri: env.yonkersDev,
     scope: 'openid profile email'
   }
 }

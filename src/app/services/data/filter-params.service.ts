@@ -15,7 +15,7 @@ export class FilterParamsService {
 
   public getAllSiteId(): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this._http.get('http://localhost:3094/siteids', {headers: headers})
+    return this._http.get('http://10.2.71.205:3094/siteids', {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
@@ -25,7 +25,7 @@ export class FilterParamsService {
   public getAllDistinctStreets(_street: any): Observable<any> {
     const headers = new Headers({'Content-Type': 'application/json'});
     const body = {street: _street };
-    return this._http.post('http://localhost:3094/streets', body, {headers: headers})
+    return this._http.post('http://10.2.71.205:3094/streets', body, {headers: headers})
     .map((response: Response) => {
       const tmpData = response.json();
       return tmpData;
