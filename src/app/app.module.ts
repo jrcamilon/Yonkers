@@ -50,6 +50,7 @@ import { Ng2TableModule }                         from 'ngx-datatable/ng2-table'
 import { ChartsModule as KendoChartsModule }      from '@progress/kendo-angular-charts';
 import { DialogModule }                           from '@progress/kendo-angular-dialog';
 
+import { TimelineComponent }                               from './pages/home/components/timeline/timeline.component';
 
 // Pages
 import { HomePage }                               from './pages/home/home';
@@ -114,7 +115,8 @@ import 'hammerjs';
     MapsPage,
     KendoChartComponent,
     DataTableComponent,
-    ErrorHandlingPage
+    ErrorHandlingPage,
+    TimelineComponent
 
   ],
   imports: [

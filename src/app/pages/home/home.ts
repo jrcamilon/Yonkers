@@ -50,6 +50,8 @@ export class HomePage implements OnInit {
   public totalPackageTicketsIssued: any = KENDO_PACKAGED_FORMAT;
   public totalFeesPackageChart: any = KENDO_PACKAGED_FORMAT_TWO;
 
+  public userName: string = '';
+
   // Inactive Dashboard list
   public dashboardList_inactive = [
     {id: 5, title: 'Redlight Revenue', class: 'scale-in-center'},
@@ -68,17 +70,12 @@ export class HomePage implements OnInit {
   ];
 
   // User Comments for Timeline view
-  public timelineActivityPosts = [
-    {id: 0, author: 'John Doe', post: 'Code Enforcement to go live with Gretchna-1st ticket approved', commentsCount: 0, time: new Date('07/23/2019') },
-    {id: 1, author: 'John Doe', post: 'JULY 2017 PARKEON PAYSTATIONS OPENED ON STREET IN DOWNTOWN AREA & IN YPA LOTS - MULTIPLE PROBLEMS WITH CONNECTIVITY,  LATENCIES AND OTHER ISSUES - DEC 2018 PARKEON MADE A CHANGE WHICH FINALLY CORRECTED THE PROBLEMS', commentsCount: 0, time: new Date('07/23/2019') },
-    {id: 2, author: 'John Doe', post: 'Code Enforcement to go live with Gretchna-1st ticket approved', commentsCount: 0, time: new Date('07/23/2019') },
-    {id: 3, author: 'John Doe', post: 'Code Enforcement to go live with Gretchna-1st ticket approved', commentsCount: 0, time: new Date('07/23/2019') }
-  ]
 
   constructor(public auth: AuthService, public _dataService: HomePageService, public _homeService: HomeService, public _dashboardDataService: DashboardDataService) {
     this.auth.isAuthenticated$.subscribe(isAuthenticated => {
       this.isAuthenticated = isAuthenticated;
     });
+
 
     // this._dashboardDataService.getInfoburstTest().subscribe(res => {
     //   console.log('INFOBURST', res);

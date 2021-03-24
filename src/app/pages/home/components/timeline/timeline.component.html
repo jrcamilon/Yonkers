@@ -1,0 +1,79 @@
+<div>
+  <ul class="timeline">
+    <li *ngFor="let post of timelineActivityPosts; let i = index">
+
+      <!-- begin timeline-time -->
+      <div class="timeline-time">
+        <span class="time">{{post.time.toLocaleDateString()}}</span>
+        <span class="date">{{post.time.toLocaleTimeString()}}</span>
+      </div>
+      <!-- end timeline-time -->
+
+      <!-- begin timeline-icon -->
+      <div class="timeline-icon">
+        <a href="javascript:;">&nbsp;</a>
+      </div>
+      <!-- end timeline-icon -->
+
+      <!-- begin timeline-body -->
+      <div class="timeline-body">
+        <div class="timeline-header">
+          <span class="username"><a href="javascript:;">{{post.author}}</a> <small></small></span>
+
+        </div>
+        <div class="timeline-content">
+          <p>
+            {{post.post}}
+          </p>
+        </div>
+
+        <div class="timeline-footer" style="border-top: 0;">
+          <a href="javascript:;" class="m-r-15 text-inverse-lighter" (click)="onCommentClick($event, post.id)"></a>
+          <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i>
+
+            <span (click)="isVisibleArr[i] = !isVisibleArr[i]">
+              <span *ngIf="!isVisibleArr[i];else other_content">{{post.comments.length}} Comments</span>
+              <ng-template #other_content>
+                <span> Comments</span>
+              </ng-template>
+            </span>
+
+          </a>
+
+        </div>
+
+        <div *ngIf="isVisibleArr[i]">
+          <div *ngFor="let comment of post.comments" >
+            <div style="display: flex;">
+              <div style="width: 20%; display: flex; padding: 8px; justify-content: flex-end;">
+                <h6>{{comment.author}}</h6>
+              </div>
+              <div style="display: flex; flex-direction: column; width: 90%; padding: 8px">
+                <p style="font-size: 14px; margin-top: -2px;">{{comment.post}}</p>
+                <div style="font-size: 12px;">{{comment.time.toLocaleTimeString()}} on {{comment.time.toDateString()}} </div>
+              </div>
+  
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-comment-box">
+          <div class="user"></div>
+          <div class="input">
+            <!-- <form action=""> -->
+              <div class="input-group">
+                <input type="text" class="form-control rounded-corner" placeholder="Write a comment..." #myComment/>
+                <span class="input-group-btn p-l-10">
+                  <button class="btn btn-primary f-s-12 rounded-corner"  type="button" (click)="onCommentSubmit(myComment.value, post.id)">Comment</button>
+                </span>
+              </div>
+            <!-- </form> -->
+          </div>
+        </div>
+      </div>
+      <!-- end timeline-body -->
+
+    </li>
+
+  </ul>
+</div>
