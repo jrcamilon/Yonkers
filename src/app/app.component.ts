@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   isAuthenticated: boolean;
 
   ngOnInit() {
-    this.auth.checkAuthentication();
+    // this.auth.checkAuthentication();
     // page settings
     this.pageSettings = pageSettings;
   }

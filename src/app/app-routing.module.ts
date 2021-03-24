@@ -15,9 +15,9 @@ import { ErrorHandlingPage } from './pages/extra/error-handling/error-handling.c
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full', data: {title: 'Empty'} },
-  { path: 'home', component: HomePage, data: { title: 'Home'}, canActivate: [ OktaAuthGuard ]},
-  { path: 'maps', component: MapsPage, data: { title: 'Maps'}, canActivate: [ OktaAuthGuard ]},
-  { path: 'implicit/callback', component: OktaCallbackComponent, data: {title: 'Callback'}},
+  { path: 'home', component: HomePage, data: { title: 'Home'}},
+  { path: 'maps', component: MapsPage, data: { title: 'Maps'}},
+  // { path: 'implicit/callback', component: OktaCallbackComponent, data: {title: 'Callback'}},
   { path: 'error-page', component: ErrorHandlingPage, data: { title: 'Error Page'} },
 ];
 
