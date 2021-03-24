@@ -122,7 +122,7 @@ import 'hammerjs';
   imports: [
     AppRoutingModule,
     HttpModule,
-    AgmCoreModule.forRoot({ apiKey: 'AIzaSyC5gJ5x8Yw7qP_DqvNq3IdZi2WUSiDjskk' + '&libraries=visualization' }),
+    AgmCoreModule.forRoot({ apiKey: 'AIzaSyDT64Cwht3FU-0Sy3irHl0V8_v2C_lXfM0' + '&libraries=visualization' }),
     BrowserAnimationsModule,
     BrowserModule,
     CalendarModule.forRoot(),

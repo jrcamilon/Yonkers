@@ -20,7 +20,7 @@ declare var google;
 export class MapsPage implements OnInit, OnDestroy {
 
   public pageSettings = pageSettings;
-  public markers = [  {lat: 40.954628, lng: -73.8640664} ];
+  public markers = [  {lat: 33.6095362, lng: -111.9477242} ];
   public cameraData: any;
   public isAuthenticated: boolean;
   public mapStyles = mapStylesDark;
